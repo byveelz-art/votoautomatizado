@@ -1,0 +1,8 @@
+{% extends 'base_votante.html' %}
+{% block title %}Inicio - Votante{% endblock %}
+
+{% block content %}
+<h3>Bienvenido {{ request.user.username }}</h3>
+<p>Aquí podrás ver información de tus elecciones, candidatos y resultados.</p>
+<a href="{% url 'panel_votante' %}" class="btn btn-primary">Consultar datos y votos</a>
+{% endblock %}

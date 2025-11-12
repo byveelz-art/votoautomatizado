@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Panel del Votante{% endblock %}</title>
+    <style>
+        body {font-family: Arial, sans-serif; background: #eef2f3; margin: 0;}
+        header {background: #1976d2; color: white; padding: 10px 20px;}
+        nav a {color: white; margin-right: 15px; text-decoration: none;}
+        .content {padding: 20px;}
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Panel del Votante</h2>
+        <nav>
+            <a href="{% url 'votante_home' %}">Inicio</a>
+            <a href="{% url 'logout' %}">Cerrar sesión</a>
+        </nav>
+    </header>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

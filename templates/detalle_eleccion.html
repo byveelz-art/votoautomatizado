@@ -1,0 +1,45 @@
+{% load static %}
+{% extends "base.html" %}
+
+{% block title %}{{ eleccion.titulo }} - Detalle{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{{ eleccion.titulo }}</h1>
+            <p class="text-muted">
+                {{ eleccion.fecha_inicio|date:"d M Y" }} — {{ eleccion.fecha_fin|date:"d M Y" }}
+            </p>
+            {% if eleccion.descripcion %}
+                <p class="card-text">{{ eleccion.descripcion|linebreaks }}</p>
+            {% endif %}
+            <hr>
+            <h5>Candidatos</h5>
+            <ul class="list-group mb-3">
+                {% for candidato in candidatos %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ candidato.nombre }}</strong>
+                            {% if candidato.descripcion %}
+                                <div class="small text-muted">{{ candidato.descripcion }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="ms-3">
+                            <!-- adjust URL name/args to your project -->
+                            <form method="post" action="{% url 'votar' eleccion.pk candidato.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-sm">Votar</button>
+                            </form>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No hay candidatos disponibles.</li>
+                {% endfor %}
+            </ul>
+
+            <a href="{% url 'lista_elecciones' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

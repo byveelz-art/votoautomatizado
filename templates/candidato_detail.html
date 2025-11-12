@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Detalles del Candidato</h2>
+  <ul class="list-group mt-3">
+    <li class="list-group-item"><b>ID:</b> {{ candidato.candidato_id }}</li>
+    <li class="list-group-item"><b>Nombre:</b> {{ candidato.nombre_candidato }}</li>
+    <li class="list-group-item"><b>Cargo:</b> {{ candidato.cargo }}</li>
+    <li class="list-group-item"><b>Partido:</b> {{ candidato.partido }}</li>
+    <li class="list-group-item"><b>Lista:</b> {{ candidato.lista }}</li>
+    <li class="list-group-item"><b>Elección:</b> {{ candidato.eleccion.tipo_eleccion }}</li>
+  </ul>
+  <a href="{% url 'lista_candidatos' %}" class="btn btn-dark mt-3">⬅️ Volver</a>
+</div>
+{% endblock %}

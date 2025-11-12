@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Candidatos</h2>
+        <a href="{% url 'crear_candidato' %}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Agregar Candidato
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Elección</th>
+                <th>Nombre</th>
+                <th>Cargo</th>
+                <th>Partido</th>
+                <th>Lista</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for candidato in candidatos %}
+            <tr>
+                <td>{{ candidato.candidato_id }}</td>
+                <td>{{ candidato.eleccion }}</td>
+                <td>{{ candidato.nombre_candidato }}</td>
+                <td>{{ candidato.cargo }}</td>
+                <td>{{ candidato.partido }}</td>
+                <td>{{ candidato.lista }}</td>
+                <td class="text-center">
+                    <a href="{% url 'detalle_candidato' candidato.candidato_id %}" class="btn btn-info btn-sm" title="Ver Detalles">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'editar_candidato' candidato.candidato_id %}" class="btn btn-warning btn-sm" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'eliminar_candidato' candidato.candidato_id %}" class="btn btn-danger btn-sm" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No hay candidatos disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
