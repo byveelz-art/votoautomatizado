@@ -182,6 +182,7 @@ def generar_pdf_votos(request):
     c.save()
 
     return response
+
 def generar_pdf_voto(voto):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -203,7 +204,7 @@ def generar_pdf_voto(voto):
     y -= 20
 
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, voto.comprobante_emision)
+    c.drawString(50, y, voto.pdf)
     y -= 40
 
     c.showPage()
