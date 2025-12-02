@@ -24,5 +24,4 @@ services:
 databases:
   - name: django-db
     plan: free
-    databaseName: yourdbname
-    user: django
+    type: postgresql
