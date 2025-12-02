@@ -1,7 +1,8 @@
 from datetime import datetime
 import django
 from django.utils import timezone
-
+from django.db import transaction
+from django.db.models import Q
 import hashlib
 import uuid
 from django.shortcuts import redirect, render
@@ -15,6 +16,7 @@ from django.http import HttpResponse
 from django.core.files.base import ContentFile
 from io import BytesIO
 from django.conf import settings
+from django.core.files import File
 
 
 @login_required
@@ -42,11 +44,25 @@ def panel_votante(request):
     votos = Voto.objects.filter(id_sesion__id_votante=votante)
     candidatos = CandidatoOpcion.objects.all()
 
+    search = request.GET.get("search", "")
+
+    votos = Voto.objects.filter(id_sesion__id_votante=votante)
+
+    if search:
+        votos = votos.filter(
+            Q(tipo_eleccion__icontains=search) |
+            Q(hash_verificacion__icontains=search) |
+            Q(comprobante_emision__icontains=search) |
+            Q(fecha_hora_emision__icontains=search)
+        )
+
+
     return render(request, 'panel_votante.html', {
         'votante': votante,
         'votos': votos,
         'candidatos': candidatos,
-        'servel': servel_data
+        'servel': servel_data,
+        "search": search
     })
 
 
@@ -93,12 +109,13 @@ def emitir_voto(request):
         from reportlab.lib.pagesizes import letter
         import os
 
-        carpeta = os.path.join(settings.MEDIA_ROOT, "comprobantes")
+        carpeta = os.path.join(settings.MEDIA_ROOT, "votos_pdf")
         os.makedirs(carpeta, exist_ok=True)
 
         nombre_pdf = f"comprobante_{voto.id_voto}.pdf"
         ruta_pdf = os.path.join(carpeta, nombre_pdf)
 
+        # Generar el PDF
         c = canvas.Canvas(ruta_pdf, pagesize=letter)
         c.setFont("Helvetica", 12)
 
@@ -106,17 +123,17 @@ def emitir_voto(request):
         c.drawString(50, 720, f"Votante: {votante.nombre} {votante.apellido_paterno} {votante.apellido_materno}")
         c.drawString(50, 700, f"RUT: {votante.rut}")
         c.drawString(50, 680, f"Elección: {candidato.eleccion}")
-        c.drawString(50, 660, f"Candidato seleccionado: {candidato.nombre_candidato}")
-        c.drawString(50, 640, f"Fecha y hora: {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        c.drawString(50, 620, f"Hash verificación: {hash_ver[:25]}...")
+        c.drawString(50, 660, f"Candidato: {candidato.nombre_candidato}")
+        c.drawString(50, 640, f"Fecha: {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        c.drawString(50, 620, f"Hash: {hash_ver[:25]}...")
         c.drawString(50, 600, f"Comprobante: {comprobante}")
 
         c.showPage()
         c.save()
 
-        # Guardar PDF en el modelo del voto
-        voto.pdf_file = f"comprobantes/{nombre_pdf}"
-        voto.save()
+        # Guardarlo en el FileField real de Django
+        with open(ruta_pdf, "rb") as pdf:
+            voto.pdf_file.save(nombre_pdf, File(pdf), save=True)
 
         messages.success(request, "Voto emitido correctamente. Comprobante disponible.")
         return redirect("panel_votante")

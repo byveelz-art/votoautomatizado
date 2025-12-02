@@ -53,6 +53,14 @@
 
 <h3>Votos Emitidos</h3>
 
+<form method="GET" style="margin-bottom:15px;">
+    <input type="text" name="search" placeholder="Buscar voto..." value="{{ search }}"
+           style="padding:8px; width:250px;">
+    <button type="submit" style="padding:8px 15px; background:#1976d2; color:white; border:none; border-radius:5px;">
+        Buscar
+    </button>
+</form>
+
 {% if votos %}
 <table border="1" cellpadding="8" style="background:white; border-radius:8px; width:100%; border-collapse:collapse;">
     <tr style="background:#1976d2; color:white;">
@@ -72,8 +80,8 @@
 
         <!-- NUEVA COLUMNA PARA DESCARGAR PDF -->
         <td>
-            {% if v.comprobante_pdf %}
-                <a href="{{ v.comprobante_pdf.url }}" download class="btn btn-primary">
+            {% if v.pdf_file %}
+                <a href="{{ v.pdf_file.url }}" download class="btn btn-primary">
                     Descargar PDF
                 </a>
             {% else %}
