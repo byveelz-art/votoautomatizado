@@ -2,7 +2,20 @@ services:
   - type: web
     name: votoautomatizado
     env: python
-    buildCommand: "pip install -r requisitos.txt"
+    buildCommand: "./build.sh"
     startCommand: "gunicorn votoautomatizado.wsgi:application"
     envVars:
-      DJANGO_SETTINGS_MODULE: votoautomatizado.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: votoautomatizadodb
+          property: connectionString
+      - key: KHIPU_API_KEY
+        sync: false
+      - key: KHIPU_API_SECRET
+        sync: false
