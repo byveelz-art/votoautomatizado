@@ -1,11 +1,92 @@
 {% extends 'base_votante.html' %}
-{% block title %}Inicio - Votante{% endblock %}
+{% block title %}Panel del Votante{% endblock %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-    <h3>Bienvenido, {{ usuario.username }}</h3>
-    <p class="lead">Puedes revisar y descargar tus datos y comprobantes de votos a continuacion: </p>
+
+<h2>Datos del Votante</h2>
+
+{% if votante %}
+<div style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
+    <p><strong>RUT:</strong> {{ votante.rut }}</p>
+    <p><strong>Nombre:</strong> {{ votante.nombre }} {{ votante.apellido_paterno }} {{ votante.apellido_materno }}</p>
+    <p><strong>Dirección:</strong> {{ votante.direccion }}</p>
+    <p><strong>Activo:</strong> {{ votante.activo }}</p>
 </div>
-</body>
-</html>
+{% else %}
+<p style="color:red;">No existe información del votante.</p>
+{% endif %}
+{% if servel %}
+<h3>Datos Electorales (SERVEL)</h3>
+<div style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
+    <p><strong>Mesa:</strong> {{ servel.tableNumber }}</p>
+    <p><strong>Circunscripción:</strong> {{ servel.circunscripcion }}</p>
+    <p><strong>Junta Electoral:</strong> {{ servel.juntaElectoral }}</p>
+    <p><strong>Local de votación:</strong> {{ servel.local }}</p>
+</div>
+{% else %}
+<p>No se pudieron obtener los datos electorales del SERVEL.</p>
+{% endif %}
+
+<hr>
+
+<h3>Emitir un voto (Simulación)</h3>
+<form method="POST" action="{% url 'emitir_voto' %}" style="margin-bottom:20px;">
+    {% csrf_token %}
+    <label for="candidato">Selecciona un candidato:</label>
+    <br><br>
+
+    <select name="candidato_id" id="candidato" style="padding:8px; width:250px;">
+        {% for c in candidatos %}
+            <option value="{{ c.candidato_id }}">{{ c.nombre_candidato }} - {{ c.eleccion }}</option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <button type="submit" 
+        style="padding:10px 20px; background:#1976d2; color:white; border:none; border-radius:5px; cursor:pointer;">
+        Emitir Voto
+    </button>
+</form>
+
+<hr>
+
+<h3>Votos Emitidos</h3>
+
+{% if votos %}
+<table border="1" cellpadding="8" style="background:white; border-radius:8px; width:100%; border-collapse:collapse;">
+    <tr style="background:#1976d2; color:white;">
+        <th>Elección</th>
+        <th>Fecha</th>
+        <th>Hash</th>
+        <th>Comprobante</th>
+        <th>PDF</th>
+    </tr>
+
+    {% for v in votos %}
+    <tr>
+        <td>{{ v.tipo_eleccion }}</td>
+        <td>{{ v.fecha_hora_emision }}</td>
+        <td>{{ v.hash_verificacion }}</td>
+        <td>{{ v.comprobante_emision }}</td>
+
+        <!-- NUEVA COLUMNA PARA DESCARGAR PDF -->
+        <td>
+            {% if v.comprobante_pdf %}
+                <a href="{{ v.comprobante_pdf.url }}" download class="btn btn-primary">
+                    Descargar PDF
+                </a>
+            {% else %}
+                <span style="color:red;">No disponible</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% else %}
+<p>Aún no has emitido ningún voto.</p>
+{% endif %}
+
 {% endblock %}

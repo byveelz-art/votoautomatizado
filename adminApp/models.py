@@ -118,6 +118,8 @@ class Voto(models.Model):
     voto_encriptado = models.TextField()
     hash_verificacion = models.CharField(max_length=256)
     comprobante_emision = models.CharField(unique=True, max_length=100)
+    id_candidato = models.ForeignKey(CandidatoOpcion, on_delete=models.CASCADE)
+    pdf_file = models.FileField(upload_to='votos_pdf/', null=True, blank=True)
 
     class Meta:
         db_table = 'voto'

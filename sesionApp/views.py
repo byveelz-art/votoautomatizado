@@ -1,61 +1,91 @@
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.utils import timezone
 from django.db import connection
+from adminApp.models import UsuarioSistema, Votante
+
 
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-        user = authenticate(request, username=username, password=password)
+        # 1️⃣ Buscar usuario en usuario_sistema
+        try:
+            usuario_sis = UsuarioSistema.objects.get(username=username)
+        except UsuarioSistema.DoesNotExist:
+            messages.error(request, "Usuario no existe en el sistema.")
+            return render(request, "login.html")
 
-        if user is not None:
-            login(request, user)
+        # 2️⃣ Validar contraseña (TEXTUAL por ahora)
+        # Idealmente reemplazar por hashing real: bcrypt / sha256
+        if usuario_sis.password_hash != password:
+            messages.error(request, "Contraseña incorrecta.")
+            return render(request, "login.html")
 
-            # 1️⃣ Guardar o actualizar votante en la tabla votante
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO votante (rut, nombre, apellido_paterno, apellido_materno, fecha_nacimiento, direccion, cod_qr, activo)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, TRUE)
-                    ON DUPLICATE KEY UPDATE nombre = VALUES(nombre)
-                """, [
-                    user.username,             # rut = username (puedes ajustarlo)
-                    user.first_name,           # nombre
-                    user.last_name,            # apellido_paterno
-                    '',                        # apellido_materno
-                    '2000-01-01',              # fecha_nacimiento (dummy)
-                    'Sin dirección',           # direccion
-                    f'QR-{user.username}',     # cod_qr (puede ser generado real)
-                ])
+        # 3️⃣ Asegurar existencia del usuario Django
+        user, created = User.objects.get_or_create(username=username)
 
-            # 2️⃣ Registrar el inicio de sesión en auditoría
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO auditoria (fecha_hora_evento, entidad_afectada, tipo_evento, usuario_sistema)
-                    VALUES (%s, %s, %s, %s)
-                """, [
-                    timezone.now(),
-                    'sesion',
-                    'INSERT',
-                    user.username
-                ])
+        if created:
+            user.set_password(password)
+            user.save()
 
-            # 3️⃣ Redirección según el rol
-            if user.is_superuser:
-                return redirect('/administracion/dashboard')
-            else:
-                return redirect('/votante/home')
+        # 4️⃣ Hacer login de usuario Django (sesión)
+        login(request, user)
 
+        # 5️⃣ Crear votante automáticamente si no existe
+        if usuario_sis.id_votante is None:
+            # Crear votante
+            votante = Votante.objects.create(
+                rut=username,
+                nombre=username,
+                apellido_paterno="",
+                apellido_materno="",
+                fecha_nacimiento="2000-01-01",
+                direccion="Sin dirección",
+                cod_qr=f"QR-{username}",
+                activo=1
+            )
+
+            usuario_sis.id_votante = votante
+            usuario_sis.save()
+
+        # 6️⃣ Registrar en auditoría
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO auditoria (fecha_hora_evento, entidad_afectada, tipo_evento, usuario_sistema)
+                VALUES (%s, %s, %s, %s)
+            """, [
+                timezone.now(),
+                "sesion",
+                "LOGIN",
+                username
+            ])
+
+        # 7️⃣ Redirección según rol
+        if usuario_sis.rol == "Admin":
+            return redirect("/administracion/dashboard")
         else:
-            messages.error(request, 'Credenciales incorrectas.')
+            return redirect("/votante/home")
 
-    return render(request, 'login.html')
+    return render(request, "login.html")
 
-@login_required
 def logout_view(request):
+    username = request.user.username
+
+    # Registrar en auditoría antes de logout
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            INSERT INTO auditoria (fecha_hora_evento, entidad_afectada, tipo_evento, usuario_sistema)
+            VALUES (%s, %s, %s, %s)
+        """, [
+            timezone.now(),
+            "sesion",
+            "LOGOUT",
+            username
+        ])
+
     logout(request)
-    return redirect('login')
+    return redirect('login/')
