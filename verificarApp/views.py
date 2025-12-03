@@ -23,10 +23,9 @@ def verificar_voto(request):
                     "voto": voto
                 })
             else:
-                messages.error(request, "❌ EL VOTO FUE ALTERADO")
+                messages.error(request, "❌ EL HASH NO COINCIDE, VOTO ALTERADO O INVÁLIDO")
                 return render(request, "verificar_voto.html", {
                     "valido": False,
-                    "voto": voto
                 })
 
         except Voto.DoesNotExist:
