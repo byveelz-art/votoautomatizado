@@ -68,7 +68,6 @@
         <th>Fecha</th>
         <th>Hash</th>
         <th>Comprobante</th>
-        <th>PDF</th>
     </tr>
 
     {% for v in votos %}
@@ -77,17 +76,6 @@
         <td>{{ v.fecha_hora_emision }}</td>
         <td>{{ v.hash_verificacion }}</td>
         <td>{{ v.comprobante_emision }}</td>
-
-        <!-- NUEVA COLUMNA PARA DESCARGAR PDF -->
-        <td>
-            {% if v.pdf_file %}
-                <a href="#" class="btn btn-primary">
-                    Descargar PDF
-                </a>
-            {% else %}
-                <span style="color:red;">No disponible</span>
-            {% endif %}
-        </td>
     </tr>
     {% endfor %}
 
