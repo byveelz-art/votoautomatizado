@@ -37,7 +37,7 @@ def login_view(request):
         login(request, user)
 
         # 5️⃣ Crear votante automáticamente si no existe
-        if usuario_sis.id_votante is None:
+        if usuario_sis.id_votante is None and usuario_sis.rol == "Votante":
             # Crear votante
             votante = Votante.objects.create(
                 rut=username,
@@ -67,7 +67,7 @@ def login_view(request):
 
         # 7️⃣ Redirección según rol
         if usuario_sis.rol == "Admin":
-            return redirect("/administracion/dashboard")
+            return redirect("administracion/dashboard")
         elif usuario_sis.rol == "Votante":
             return redirect("/votante/home")
         else:
