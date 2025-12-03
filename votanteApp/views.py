@@ -138,77 +138,77 @@ def emitir_voto(request):
         messages.success(request, "Voto emitido correctamente. Comprobante disponible.")
         return redirect("panel_votante")
 
-@login_required
-def generar_pdf_votos(request):
-    votante = Votante.objects.filter(rut=request.user.username).first()
-    votos = Voto.objects.filter(id_sesion__id_votante=votante)
+# @login_required
+# def generar_pdf_votos(request):
+#     votante = Votante.objects.filter(rut=request.user.username).first()
+#     votos = Voto.objects.filter(id_sesion__id_votante=votante)
 
-    # Configurar respuesta como archivo PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="comprobante_votos.pdf"'
+#     # Configurar respuesta como archivo PDF
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="comprobante_votos.pdf"'
 
-    c = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
+#     c = canvas.Canvas(response, pagesize=letter)
+#     width, height = letter
 
-    y = height - 50
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, y, "Comprobante de Votos Emitidos")
-    y -= 40
+#     y = height - 50
+#     c.setFont("Helvetica-Bold", 16)
+#     c.drawString(50, y, "Comprobante de Votos Emitidos")
+#     y -= 40
 
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, f"Votante: {votante.nombre} {votante.apellido_paterno} ({votante.rut})")
-    y -= 30
+#     c.setFont("Helvetica", 12)
+#     c.drawString(50, y, f"Votante: {votante.nombre} {votante.apellido_paterno} ({votante.rut})")
+#     y -= 30
 
-    # Tabla / lista de votos
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, "Elección")
-    c.drawString(200, y, "Fecha")
-    c.drawString(350, y, "Comprobante")
-    y -= 20
+#     # Tabla / lista de votos
+#     c.setFont("Helvetica-Bold", 12)
+#     c.drawString(50, y, "Elección")
+#     c.drawString(200, y, "Fecha")
+#     c.drawString(350, y, "Comprobante")
+#     y -= 20
 
-    c.setFont("Helvetica", 11)
+#     c.setFont("Helvetica", 11)
 
-    for voto in votos:
-        if y < 80:
-            c.showPage()
-            y = height - 80
+#     for voto in votos:
+#         if y < 80:
+#             c.showPage()
+#             y = height - 80
 
-        c.drawString(50, y, voto.tipo_eleccion)
-        c.drawString(200, y, voto.fecha_hora_emision.strftime("%Y-%m-%d %H:%M"))
-        c.drawString(350, y, voto.comprobante_emision)
-        y -= 20
+#         c.drawString(50, y, voto.tipo_eleccion)
+#         c.drawString(200, y, voto.fecha_hora_emision.strftime("%Y-%m-%d %H:%M"))
+#         c.drawString(350, y, voto.comprobante_emision)
+#         y -= 20
 
-    c.showPage()
-    c.save()
+#     c.showPage()
+#     c.save()
 
-    return response
+#     return response
 
-def generar_pdf_voto(voto):
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
-    width, height = letter
+# def generar_pdf_voto(voto):
+#     buffer = BytesIO()
+#     c = canvas.Canvas(buffer, pagesize=letter)
+#     width, height = letter
 
-    y = height - 50
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, y, "Comprobante de Voto")
-    y -= 40
+#     y = height - 50
+#     c.setFont("Helvetica-Bold", 16)
+#     c.drawString(50, y, "Comprobante de Voto")
+#     y -= 40
 
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, f"Tipo de elección: {voto.tipo_eleccion}")
-    y -= 25
+#     c.setFont("Helvetica", 12)
+#     c.drawString(50, y, f"Tipo de elección: {voto.tipo_eleccion}")
+#     y -= 25
 
-    c.drawString(50, y, f"Fecha emisión: {voto.fecha_hora_emision.strftime('%Y-%m-%d %H:%M')}")
-    y -= 25
+#     c.drawString(50, y, f"Fecha emisión: {voto.fecha_hora_emision.strftime('%Y-%m-%d %H:%M')}")
+#     y -= 25
 
-    c.drawString(50, y, "Comprobante único:")
-    y -= 20
+#     c.drawString(50, y, "Comprobante único:")
+#     y -= 20
 
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, voto.pdf)
-    y -= 40
+#     c.setFont("Helvetica-Bold", 12)
+#     c.drawString(50, y, voto.pdf)
+#     y -= 40
 
-    c.showPage()
-    c.save()
+#     c.showPage()
+#     c.save()
 
-    buffer.seek(0)
-    return buffer
+#     buffer.seek(0)
+#     return buffer
