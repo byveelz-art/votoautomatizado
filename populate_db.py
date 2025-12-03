@@ -12,3 +12,6 @@ UsuarioSistema.objects.get_or_create(
 )
 
 print("✅ Usuario admin garantizado")
+print("   - Usuario:", config("DJANGO_SUPERUSER_USERNAME"))
+print("   - Contraseña:", config("DJANGO_SUPERUSER_PASSWORD"))
+print("   - Rol:", config("DJANGO_SUPERUSER_ROLE"))
