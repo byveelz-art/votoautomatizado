@@ -68,7 +68,7 @@ def login_view(request):
         # 7️⃣ Redirección según rol
         if usuario_sis.rol == "Admin":
             return redirect("/administracion/dashboard")
-        elif usuario_sis.rol == "Votante" and usuario_sis.activo == 1:
+        elif usuario_sis.rol == "Votante" and usuario_sis.id_votante in [v.id_votante for v in Votante.objects.all()]:
             return redirect("/votante/home")
         else:
             messages.error(request, "Rol de usuario no reconocido o inactivo.")

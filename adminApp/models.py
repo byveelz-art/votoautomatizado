@@ -30,7 +30,7 @@ class Votante(models.Model):
     fecha_nacimiento = models.DateField()
     direccion = models.CharField(max_length=100, blank=True, null=True)
     cod_qr = models.CharField(max_length=256)
-    activo = models.IntegerField(blank=True, null=True)
+    activo = models.IntegerField(blank=True, null=True, default=1)
 
     class Meta:
         db_table = 'votante'
