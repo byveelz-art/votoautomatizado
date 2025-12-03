@@ -148,5 +148,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Usa la base de datos para almacenar sesiones
 LOGIN_URL = '/login/'  # Redirige a esta URL si el usuario no está autenticado  
 LOGOUT_REDIRECT_URL = '/login/'  # Redirige a esta URL después del cierre de sesión
-KHIPU_API_KEY = config('KHIPU_API_KEY')
-KHIPU_API_SECRET = config('KHIPU_API_SECRET')
