@@ -102,7 +102,7 @@ class UsuarioSistema(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=50)
     password_hash = models.CharField(max_length=255)
-    rol = models.CharField(max_length=8, choices=UsuarioRol.choices)
+    rol = models.CharField(choices=UsuarioRol.choices, blank=True, null=True)
     id_votante = models.ForeignKey(
         Votante,
         on_delete=models.SET_NULL,
