@@ -137,6 +137,7 @@ def emitir_voto(request):
 
         messages.success(request, "Voto emitido correctamente. Comprobante disponible.")
         return redirect("panel_votante")
+    return render(request, "panel_votante.html")
 
 # @login_required
 # def generar_pdf_votos(request):

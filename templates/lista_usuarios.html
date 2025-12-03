@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Usuarios del Sistema</a>
+    <a href="{% url 'admin_dashboard' %}" class="text-white">← Volver</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-3">Usuarios del Sistema</h2>
+
+    <a href="{% url 'crear_usuario' %}" class="btn btn-success mb-3">➕ Nuevo Usuario</a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Votante Asociado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.id_usuario }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.get_rol_display }}</td>
+                <td>{{ u.id_votante }}</td>
+                <td>
+                    <a href="{% url 'editar_usuario' u.id_usuario %}" class="btn btn-sm btn-warning">✏️</a>
+                    <a href="{% url 'eliminar_usuario' u.id_usuario %}" class="btn btn-sm btn-danger">🗑️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

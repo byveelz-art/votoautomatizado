@@ -1,5 +1,5 @@
 from django import forms
-from adminApp.models import CandidatoOpcion
+from adminApp.models import CandidatoOpcion, UsuarioSistema
 
 class CandidatoOpcionForm(forms.ModelForm):
     class Meta:
@@ -19,3 +19,14 @@ class CandidatoOpcionForm(forms.ModelForm):
             'partido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Partido Verde'}),
             'lista': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: A'}),
         }
+
+
+class UsuarioSistemaForm(forms.ModelForm):
+    password_hash = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Contraseña"
+    )
+
+    class Meta:
+        model = UsuarioSistema
+        fields = ['username', 'password_hash', 'rol', 'id_votante']

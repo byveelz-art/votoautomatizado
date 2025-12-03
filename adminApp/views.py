@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.db.models import Q, Count
-from adminApp.models import Votante, Eleccion, SesionVotacion, CandidatoOpcion, Voto , Auditoria
+from adminApp.models import Votante, Eleccion, SesionVotacion, CandidatoOpcion, Voto , Auditoria, Terminal, UsuarioSistema
 from django.utils import timezone
 from django.contrib import messages
-from adminApp.forms import CandidatoOpcionForm
+from adminApp.forms import CandidatoOpcionForm, UsuarioSistemaForm
 from rest_framework import viewsets
 from adminApp.serializers import CandidatoOpcionSerializer
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -132,3 +132,59 @@ def candidato_opcion_api():
         'get': 'list',
         'post': 'create'
     })
+
+@login_required(login_url='/sesion/login/')
+def lista_usuarios(request):
+    usuarios = UsuarioSistema.objects.select_related('id_votante').all()
+    return render(request, 'lista_usuarios.html', {'usuarios': usuarios})
+
+# ✅ CREAR USUARIO
+@login_required(login_url='/sesion/login/')
+def crear_usuario(request):
+    if request.method == 'POST':
+        form = UsuarioSistemaForm(request.POST)
+        if form.is_valid():
+            usuario = form.save()
+            registrar_auditoria('usuario_sistema', usuario.id_usuario, 'INSERT', request.user.username)
+            messages.success(request, "✅ Usuario creado correctamente.")
+            return redirect('lista_usuarios')
+    else:
+        form = UsuarioSistemaForm()
+
+    return render(request, 'form_usuario.html', {
+        'form': form,
+        'titulo': 'Crear Usuario'
+    })
+
+# ✅ EDITAR USUARIO
+@login_required(login_url='/sesion/login/')
+def editar_usuario(request, id_usuario):
+    usuario = get_object_or_404(UsuarioSistema, id_usuario=id_usuario)
+
+    if request.method == 'POST':
+        form = UsuarioSistemaForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            registrar_auditoria('usuario_sistema', usuario.id_usuario, 'UPDATE', request.user.username)
+            messages.info(request, "✏️ Usuario actualizado.")
+            return redirect('lista_usuarios')
+    else:
+        form = UsuarioSistemaForm(instance=usuario)
+
+    return render(request, 'form_usuario.html', {
+        'form': form,
+        'titulo': 'Editar Usuario'
+    })
+
+# ✅ ELIMINAR USUARIO
+@login_required(login_url='/sesion/login/')
+def eliminar_usuario(request, id_usuario):
+    usuario = get_object_or_404(UsuarioSistema, id_usuario=id_usuario)
+
+    if request.method == 'POST':
+        usuario.delete()
+        registrar_auditoria('usuario_sistema', id_usuario, 'DELETE', request.user.username)
+        messages.error(request, "🗑️ Usuario eliminado.")
+        return redirect('lista_usuarios')
+
+    return render(request, 'eliminar_usuario.html', {'usuario': usuario})
