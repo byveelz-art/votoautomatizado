@@ -12,66 +12,22 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-
-        # 1️⃣ Buscar usuario en usuario_sistema
         try:
             usuario_sis = UsuarioSistema.objects.get(username=username)
         except UsuarioSistema.DoesNotExist:
-            messages.error(request, "Usuario no existe en el sistema.")
-            return render(request, "login.html")
+            return render(request, "login.html", {
+                "error": "Usuario no existe"
+            })
 
-        # 2️⃣ Validar contraseña (TEXTUAL por ahora)
-        # Idealmente reemplazar por hashing real: bcrypt / sha256
         if usuario_sis.password_hash != password:
-            messages.error(request, "Contraseña incorrecta.")
-            return render(request, "login.html")
+            return render(request, "login.html", {
+                "error": "Contraseña incorrecta"
+            })
 
-        # 3️⃣ Asegurar existencia del usuario Django
-        user, created = User.objects.get_or_create(username=username)
-
-        if created:
-            user.set_password(password)
-            user.save()
-
-        # 4️⃣ Hacer login de usuario Django (sesión)
-        login(request, user)
-
-        # 5️⃣ Crear votante automáticamente si no existe
-        if usuario_sis.id_votante is None:
-            # Crear votante
-            votante = Votante.objects.create(
-                rut=username,
-                nombre=username,
-                apellido_paterno="",
-                apellido_materno="",
-                fecha_nacimiento="2000-01-01",
-                direccion="Sin dirección",
-                cod_qr=f"QR-{username}",
-                activo=1
-            )
-
-            usuario_sis.id_votante = votante
-            usuario_sis.save()
-
-        # 6️⃣ Registrar en auditoría
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO auditoria (fecha_hora_evento, entidad_afectada, tipo_evento, usuario_sistema)
-                VALUES (%s, %s, %s, %s)
-            """, [
-                timezone.now(),
-                "sesion",
-                "LOGIN",
-                username
-            ])
-
-        # 7️⃣ Redirección según rol
         if usuario_sis.rol == "Admin":
-            return redirect("/administracion/dashboard")
-        elif usuario_sis.rol == "Votante":
-            return redirect("/votante/home")
+            return redirect("/admin/")
         else:
-            messages.error(request, "Rol de usuario no reconocido o inactivo.")
+            return redirect("/votante/")
 
     return render(request, "login.html")
 
