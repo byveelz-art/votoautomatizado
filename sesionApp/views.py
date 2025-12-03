@@ -12,6 +12,9 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
+        if request.user.is_superuser:
+            return redirect('/admin/')
+
         # 1️⃣ Buscar usuario en usuario_sistema
         try:
             usuario_sis = UsuarioSistema.objects.get(username=username)
