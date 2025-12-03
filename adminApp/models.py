@@ -78,10 +78,16 @@ class CandidatoOpcion(models.Model):
         PRESIDENCIAL = 'Presidencial'
         PARLAMENTARIA = 'Parlamentaria'
         MUNICIPAL = 'Municipal'
+    class cargoTipo(models.TextChoices):
+        PRESIDENTE = 'Presidente'
+        SENADOR = 'Senador'
+        DIPUTADO = 'Diputado'
+        ALCALDE = 'Alcalde'
+        CONCEJAL = 'Concejal'
     candidato_id = models.AutoField(primary_key=True)
     eleccion = models.CharField(max_length=13, choices=eleccionTipo.choices)
     nombre_candidato = models.CharField(max_length=100)
-    cargo = models.CharField(max_length=50, blank=True, null=True)
+    cargo = models.CharField(max_length=10, choices=cargoTipo.choices)
     partido = models.CharField(max_length=50, blank=True, null=True)
     lista = models.CharField(max_length=20, blank=True, null=True)
 
@@ -90,10 +96,13 @@ class CandidatoOpcion(models.Model):
 
 
 class UsuarioSistema(models.Model):
+    class UsuarioRol(models.TextChoices):
+        ADMIN = 'Admin'
+        VOTANTE = 'Votante'
     id_usuario = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=50)
     password_hash = models.CharField(max_length=255)
-    rol = models.CharField(max_length=13, blank=True, null=True)
+    rol = models.CharField(max_length=8, choices=UsuarioRol.choices)
     id_votante = models.ForeignKey(
         Votante,
         on_delete=models.SET_NULL,
