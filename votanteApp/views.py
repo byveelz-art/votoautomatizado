@@ -74,7 +74,7 @@ def emitir_voto(request):
         votante = Votante.objects.filter(rut=request.user.username).first()
 
         Terminal.objects.get_or_create(
-            terminal_id="TERM-1",
+            terminal_id="1",
             defaults={"ubicacion": "Producción", "estado_terminal": "Activo"}
         )
 
