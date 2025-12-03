@@ -82,7 +82,6 @@ class CandidatoOpcion(models.Model):
         PARLAMENTARIA = 'Parlamentaria'
         MUNICIPAL = 'Municipal'
     class cargoTipo(models.TextChoices):
-        PRESIDENTE = 'Presidente'
         SENADOR = 'Senador'
         DIPUTADO = 'Diputado'
         ALCALDE = 'Alcalde'

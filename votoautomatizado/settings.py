@@ -160,7 +160,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Usa la base de datos para almacenar sesiones
-LOGIN_URL = '/login/'  # Redirige a esta URL si el usuario no está autenticado  
-LOGOUT_REDIRECT_URL = '/login/'  # Redirige a esta URL después del cierre de sesión
+LOGIN_URL = ''  # Redirige a esta URL si el usuario no está autenticado  
+LOGOUT_REDIRECT_URL = ''  # Redirige a esta URL después del cierre de sesión
 khipu_api_key = config('KHIPU_API_KEY', default='')
 khipu_api_secret = config('KHIPU_API_SECRET', default='')
