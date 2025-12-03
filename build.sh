@@ -9,6 +9,7 @@ pip install -r requisitos.txt
 python manage.py collectstatic --noinput
 
 # apply migrations
+python manage.py makemigrations
 python manage.py migrate
 
     
