@@ -116,7 +116,8 @@ def emitir_voto(request):
         )
 
         # ✅ 6. Generar hash seguro
-        voto_raw = f"{votante.id_votante}-{candidato.nombre_candidato}-{timezone.now()}"
+        fecha_emision = timezone.now()
+        voto_raw = f"{sesion.id_sesion}-{candidato.nombre_candidato}-{fecha_emision}"
         hash_ver = hashlib.sha256(voto_raw.encode()).hexdigest()
 
         # ✅ 7. Crear voto
@@ -126,7 +127,7 @@ def emitir_voto(request):
             id_sesion=sesion,
             id_candidato=candidato,
             tipo_eleccion=candidato.eleccion,
-            fecha_hora_emision=timezone.now(),
+            fecha_hora_emision=fecha_emision,
             voto_encriptado="VOTO_SIMULADO",
             hash_verificacion=hash_ver,
             comprobante_emision=comprobante

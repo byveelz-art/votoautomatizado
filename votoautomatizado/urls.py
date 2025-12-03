@@ -19,10 +19,12 @@ from django.urls import path, include
 from adminApp import urls as admin_urls
 from sesionApp import urls as sesion_urls
 from votanteApp import urls as votante_urls
+from verificarApp.views import verificar_voto
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('administracion/', include(admin_urls)),
     path('', include(sesion_urls)),
     path('votante/', include(votante_urls)),
+    path("verificar-voto/", verificar_voto, name="verificar_voto"),
 ]
