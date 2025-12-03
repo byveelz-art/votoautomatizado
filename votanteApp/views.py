@@ -8,7 +8,7 @@ import uuid
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from adminApp.models import Votante, Voto, SesionVotacion, CandidatoOpcion, UsuarioSistema
+from adminApp.models import Votante, Voto, SesionVotacion, CandidatoOpcion, UsuarioSistema, Terminal
 from votanteApp.utils.servel import consultar_servel
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -81,7 +81,7 @@ def emitir_voto(request):
         # Crear sesión de votación
         sesion = SesionVotacion.objects.create(
             id_votante=votante,
-            terminal_id=1,
+            terminal_id = Terminal.objects.first().terminal_id,
             fecha_hora_inicio=timezone.now(),
             estado_sesion="activa"
         )

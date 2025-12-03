@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Terminal(models.Model):
-    terminal_id = models.AutoField(primary_key=True)
+    terminal_id = models.CharField(max_length=50, primary_key=True)
     ubicacion = models.CharField(max_length=100, blank=True, null=True)
     estado_terminal = models.CharField(max_length=14, blank=True, null=True)
 
@@ -11,7 +11,7 @@ class Terminal(models.Model):
 
 
 class Eleccion(models.Model):
-    eleccion_id = models.AutoField(primary_key=True)
+    eleccion_id = models.CharField(max_length=50, primary_key=True, auto_created=False)
     tipo_eleccion = models.CharField(max_length=13)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
@@ -22,7 +22,7 @@ class Eleccion(models.Model):
 
 
 class Votante(models.Model):
-    id_votante = models.AutoField(primary_key=True)
+    id_votante = models.CharField(max_length=50, primary_key=True, auto_created=False)
     rut = models.CharField(unique=True, max_length=12)
     nombre = models.CharField(max_length=50)
     apellido_paterno = models.CharField(max_length=50)
