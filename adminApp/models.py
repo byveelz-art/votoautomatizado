@@ -34,6 +34,9 @@ class Votante(models.Model):
 
     class Meta:
         db_table = 'votante'
+    
+    def __str__(self):
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} (RUT: {self.rut})"
 
 
 class Auditoria(models.Model):
