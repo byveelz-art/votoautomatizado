@@ -102,38 +102,38 @@ def emitir_voto(request):
             comprobante_emision=comprobante
         )
 
-        # -------------------------------
-        #   GENERAR PDF DEL COMPROBANTE
-        # -------------------------------
-        from reportlab.pdfgen import canvas
-        from reportlab.lib.pagesizes import letter
-        import os
+        # # -------------------------------
+        # #   GENERAR PDF DEL COMPROBANTE
+        # # -------------------------------
+        # from reportlab.pdfgen import canvas
+        # from reportlab.lib.pagesizes import letter
+        # import os
 
-        carpeta = os.path.join(settings.MEDIA_ROOT, "votos_pdf")
-        os.makedirs(carpeta, exist_ok=True)
+        # carpeta = os.path.join(settings.MEDIA_ROOT, "votos_pdf")
+        # os.makedirs(carpeta, exist_ok=True)
 
-        nombre_pdf = f"comprobante_{voto.id_voto}.pdf"
-        ruta_pdf = os.path.join(carpeta, nombre_pdf)
+        # nombre_pdf = f"comprobante_{voto.id_voto}.pdf"
+        # ruta_pdf = os.path.join(carpeta, nombre_pdf)
 
-        # Generar el PDF
-        c = canvas.Canvas(ruta_pdf, pagesize=letter)
-        c.setFont("Helvetica", 12)
+        # # Generar el PDF
+        # c = canvas.Canvas(ruta_pdf, pagesize=letter)
+        # c.setFont("Helvetica", 12)
 
-        c.drawString(50, 750, "COMPROBANTE DE VOTO")
-        c.drawString(50, 720, f"Votante: {votante.nombre} {votante.apellido_paterno} {votante.apellido_materno}")
-        c.drawString(50, 700, f"RUT: {votante.rut}")
-        c.drawString(50, 680, f"Elección: {candidato.eleccion}")
-        c.drawString(50, 660, f"Candidato: {candidato.nombre_candidato}")
-        c.drawString(50, 640, f"Fecha: {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        c.drawString(50, 620, f"Hash: {hash_ver[:25]}...")
-        c.drawString(50, 600, f"Comprobante: {comprobante}")
+        # c.drawString(50, 750, "COMPROBANTE DE VOTO")
+        # c.drawString(50, 720, f"Votante: {votante.nombre} {votante.apellido_paterno} {votante.apellido_materno}")
+        # c.drawString(50, 700, f"RUT: {votante.rut}")
+        # c.drawString(50, 680, f"Elección: {candidato.eleccion}")
+        # c.drawString(50, 660, f"Candidato: {candidato.nombre_candidato}")
+        # c.drawString(50, 640, f"Fecha: {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        # c.drawString(50, 620, f"Hash: {hash_ver[:25]}...")
+        # c.drawString(50, 600, f"Comprobante: {comprobante}")
 
-        c.showPage()
-        c.save()
+        # c.showPage()
+        # c.save()
 
-        # Guardarlo en el FileField real de Django
-        with open(ruta_pdf, "rb") as pdf:
-            voto.pdf_file.save(nombre_pdf, File(pdf), save=True)
+        # # Guardarlo en el FileField real de Django
+        # with open(ruta_pdf, "rb") as pdf:
+        #     voto.pdf_file.save(nombre_pdf, File(pdf), save=True)
 
         messages.success(request, "Voto emitido correctamente. Comprobante disponible.")
         return redirect("panel_votante")
