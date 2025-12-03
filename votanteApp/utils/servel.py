@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from votoautomatizado import settings
 
 def consultar_servel(rut, nombre, fecha_nacimiento):
     """
@@ -12,7 +13,7 @@ def consultar_servel(rut, nombre, fecha_nacimiento):
     url = "https://services.khipu.com/services/servel.cl/electoral-data-verification/v1"
 
     headers = {
-        "x-api-key": settings.KHIPU_API_KEY
+        "x-api-key": settings.khipu_api_key
     }
 
     payload = {
