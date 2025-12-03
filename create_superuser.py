@@ -16,3 +16,9 @@ def run():
         print("✅ Superusuario creado automáticamente en Render")
     else:
         print("ℹ️ El superusuario ya existe")
+
+    print("   - Usuario:", username)
+    print("   - Contraseña:", password)
+    print("   - Rol: Admin")
+
+run()
