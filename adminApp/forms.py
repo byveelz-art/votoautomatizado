@@ -15,7 +15,7 @@ class CandidatoOpcionForm(forms.ModelForm):
         widgets = {
             'eleccion': forms.Select(attrs={'class': 'form-select'}),
             'nombre_candidato': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Juan Pérez'}),
-            'cargo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Diputado'}),
+            'cargo': forms.Select(attrs={'class': 'form-select'}),
             'partido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Partido Verde'}),
             'lista': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: A'}),
         }

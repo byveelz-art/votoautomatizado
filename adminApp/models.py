@@ -90,7 +90,7 @@ class CandidatoOpcion(models.Model):
     candidato_id = models.AutoField(primary_key=True)
     eleccion = models.CharField(choices=eleccionTipo.choices)
     nombre_candidato = models.CharField(max_length=100)
-    cargo = models.CharField(choices=cargoTipo.choices, default="Sin cargo", blank=True, null=True)
+    cargo = models.CharField(choices=cargoTipo.choices, default="Sin cargo", null=True)
     partido = models.CharField(max_length=50, blank=True, null=True)
     lista = models.CharField(max_length=20, blank=True, null=True)
 
